@@ -54,11 +54,19 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+
     private void OnCollisionEnter ( Collision collision )
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
             onGround = true;
+        }
+
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            // Aquí puedes agregar lógica para manejar colisiones con obstáculos
+            Debug.Log("Colisión con Enemigo detectada.");
         }
     }
 
@@ -67,6 +75,15 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             onGround = false;
+        }
+    }
+    private void OnTriggerEnter ( Collider other )
+    {
+        if (other.gameObject.CompareTag("Powerup"))
+        {
+            Destroy(other.gameObject);
+            // Aquí puedes agregar lógica para manejar la recogida de power-ups
+            Debug.Log("Power-up recogido.");
         }
     }
 }

@@ -4,6 +4,7 @@ public class RotateCamera : MonoBehaviour
 {
     public Transform player; // Asigna el jugador en el Inspector
     private float fixedY;
+    public float offsetZ = 5f; // Distancia fija en el eje Z 
 
     void Start ()
     {
@@ -23,7 +24,7 @@ public class RotateCamera : MonoBehaviour
     {
         if (player == null) return;
 
-        Vector3 newPosition = new Vector3(player.position.x, fixedY, player.position.z + 5);
+        Vector3 newPosition = new Vector3(player.position.x, fixedY, player.position.z + offsetZ);
         transform.position = newPosition;
     }
 }
