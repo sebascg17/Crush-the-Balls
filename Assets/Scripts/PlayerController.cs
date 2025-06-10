@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -5,8 +6,11 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed = 5f;
     public float jumpForce = 1000f;
     private float zBound = 10;
+    private float xBound = 18;
     private bool onGround = true; // Comienza en el suelo
     private Rigidbody playerRb;
+    private float horizontalInput;
+    private float verticalInput;
 
     void Start ()
     {
@@ -22,15 +26,13 @@ public class PlayerController : MonoBehaviour
 
     void MovePlayer ()
     {
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
+        horizontalInput = Input.GetAxis("Horizontal");
+        verticalInput = Input.GetAxis("Vertical");
 
         Vector3 movimiento = new Vector3(horizontalInput, 0, verticalInput);
-        //transform.Translate(movimiento * moveSpeed * Time.deltaTime);
 
         playerRb.AddForce(movimiento * moveSpeed, ForceMode.Force);
-        //playerRb.AddForce(Vector3.forward * moveSpeed * verticalInput);
-        //playerRb.AddForce(Vector3.right * moveSpeed * horizontalInput);
+        //transform.Translate(movimiento * moveSpeed * Time.deltaTime);
     }
 
     void JumpPlayer ()
@@ -52,6 +54,14 @@ public class PlayerController : MonoBehaviour
         {
             transform.position = new Vector3(transform.position.x, transform.position.y, -zBound);
         }
+        else if (transform.position.x > xBound)
+        {
+            transform.position = new Vector3(xBound, transform.position.y, transform.position.x);
+        }
+        else if (transform.position.x < -xBound)
+        {
+            transform.position = new Vector3(-xBound, transform.position.y, transform.position.x);
+        }
     }
 
 
@@ -65,6 +75,11 @@ public class PlayerController : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Enemy"))
         {
+            AudioSource enemyAudio = collision.gameObject.GetComponent<AudioSource>();
+            if (enemyAudio != null)
+            {
+                enemyAudio.Play();
+            }
             // Aquí puedes agregar lógica para manejar colisiones con obstáculos
             Debug.Log("Colisión con Enemigo detectada.");
         }
@@ -81,9 +96,14 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Powerup"))
         {
-            Destroy(other.gameObject);
-            // Aquí puedes agregar lógica para manejar la recogida de power-ups
-            Debug.Log("Power-up recogido.");
+            AudioSource powerupAudio = other.gameObject.GetComponent<AudioSource>();
+            if (powerupAudio != null)
+            {
+                powerupAudio.Play();
+            }
+
+            // Espera un poco antes de destruir para que el sonido se escuche
+            Destroy(other.gameObject, 0.1f);
         }
     }
 }
